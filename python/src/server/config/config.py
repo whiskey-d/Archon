@@ -110,6 +110,12 @@ def validate_supabase_url(url: str) -> bool:
         local_hosts = ["localhost", "127.0.0.1", "host.docker.internal"]
         if hostname in local_hosts or hostname.endswith(".localhost"):
             return True
+        # Allow HTTP for Docker Compose service names (hyphenated hostnames)
+          # These are internal Docker network names, safe for HTTP
+          import re
+          if re.match(r'^[a-z0-9]+(-[a-z0-9]+)*$', hostname, re.IGNORECASE):
+              logger.info(f"Allowing HTTP for Docker service name: {hostname}")
+              return True
 
         # Check if hostname is a private IP address
         try:
