@@ -110,10 +110,15 @@ def validate_supabase_url(url: str) -> bool:
         if re.match(r'^[a-z0-9]+(-[a-z0-9]+)*$', hostname, re.IGNORECASE):
             return True
 
-        # Check if hostname is a private IP address
+        # Check if hostname is any IP address (private or public)
+        # In Docker/Dokploy deployments, HTTP to IP addresses is acceptable
+        # as these are internal network connections or same-host deployments
         try:
             ip = ipaddress.ip_address(hostname)
-            if (ip.is_private or ip.is_loopback or ip.is_link_local) and not ip.is_unspecified:
+            # Allow HTTP for any valid IP address in Docker environments
+            # This includes both private IPs (10.x, 192.168.x, etc.) and
+            # public IPs used in Docker/Dokploy same-host deployments
+            if not ip.is_unspecified:
                 return True
         except ValueError:
             pass
