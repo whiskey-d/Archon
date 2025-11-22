@@ -8,6 +8,8 @@
 services:
   # Server Service (FastAPI + Socket.IO + Crawling)
   archon-server:
+    env_file:
+      - .env
     build:
       context: ./python
       dockerfile: Dockerfile.server
@@ -67,6 +69,8 @@ services:
 
   # Lightweight MCP Server Service (HTTP-based)
   archon-mcp:
+    env_file:
+      - .env
     build:
       context: ./python
       dockerfile: Dockerfile.mcp
@@ -203,6 +207,8 @@ services:
 
   # Frontend
   archon-frontend:
+    env_file:
+      - .env
     build: ./archon-ui-main
     container_name: archon-ui
     ports:
